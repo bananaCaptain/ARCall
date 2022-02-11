@@ -20,16 +20,21 @@ import org.ar.rtm.RemoteInvitation
 import org.json.JSONObject
 import kotlin.system.exitProcess
 
+/**
+ * 主页
+ */
 class MainActivity : BaseActivity() {
 
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }//不可变就不能设置为空，有泄漏隐患
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        ViewCompat.setTransitionName(binding.ivLogo, "logo")
+        ViewCompat.setTransitionName(binding.ivLogo, "logo")//转场动画？
+        //登录RTM
         loginRtm()
+
         binding.run {
             tvUser.text = "您的呼叫ID:${callViewModel.userId}"
             btnP2p.setOnClickListener {
@@ -41,7 +46,7 @@ class MainActivity : BaseActivity() {
             }
             btnMultiple.setOnClickListener {
                 if (callViewModel.isLoginSuccess) {
-                   go(GroupCallActivity::class.java)
+                    go(GroupCallActivity::class.java)
                 } else {
                     showReLoginDialog()
                 }
@@ -56,9 +61,9 @@ class MainActivity : BaseActivity() {
             if (callViewModel.login()) {
                 showSuccess("登录成功")
             } else {
-                if (BuildConfig.APPID.equals("YOUR APPID")){
+                if (BuildConfig.APPID.equals("YOUR APPID")) {//这里应该修正
                     showError("登录失败，请配置APPID")
-                }else{
+                } else {
                     showError("登录失败，请检查网络")
                 }
             }
@@ -74,7 +79,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showExitDialog() {
-        MessageDialog.show("提示", "确定要退出吗？", "确定","取消")
+        MessageDialog.show("提示", "确定要退出吗？", "确定", "取消")
             .setOkButtonClickListener { baseDialog, v ->
                 callViewModel.release()
                 exitProcess(0)
@@ -84,8 +89,8 @@ class MainActivity : BaseActivity() {
 
     }
 
-    private fun showReLoginDialog(){
-        MessageDialog.show("提示", "登录RTM失败，请检查网络", "重新登录","取消")
+    private fun showReLoginDialog() {
+        MessageDialog.show("提示", "登录RTM失败，请检查网络", "重新登录", "取消")
             .setOkButtonClickListener { baseDialog, v ->
                 baseDialog.dismiss()
                 loginRtm()
@@ -97,12 +102,12 @@ class MainActivity : BaseActivity() {
         super.onRemoteInvitationReceived(var1)
         val isMultiple = JSONObject(var1?.content)["Conference"]
         startActivity(Intent().apply {
-            if (isMultiple==1||isMultiple==true){
+            if (isMultiple == 1 || isMultiple == true) {
                 setClass(this@MainActivity, GroupCallActivity::class.java)
-            }else{
+            } else {
                 setClass(this@MainActivity, P2PVideoActivity::class.java)
             }
-            putExtra("isCalled",true)//是否是收到呼叫 no
+            putExtra("isCalled", true)//是否是收到呼叫 no
         })
     }
 

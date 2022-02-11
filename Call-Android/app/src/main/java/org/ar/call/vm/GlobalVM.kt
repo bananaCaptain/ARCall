@@ -39,7 +39,7 @@ import org.ar.call.utils.getPackageContext
 import java.io.File
 
 
-class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
+class GlobalVM : ViewModel(), LifecycleObserver, NetworkObserver.Listener {
 
     private var isBackground = false //是否处于后台
     private var needReCallBack = false //从后台回到前台 期间如果有人呼叫 需要将呼叫重新回调出去
@@ -49,9 +49,10 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
     var callType = -1//呼叫类型
     var callingUid = ""//p2p正在通话中的人的UID
     var netOnline = true //网络是否连接着
+
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-        NetworkObserver.invoke(CallApplication.callApp.applicationContext,true,this)
+        NetworkObserver.invoke(CallApplication.callApp.applicationContext, true, this)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -74,7 +75,7 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
     }
 
 
-    val userId = ((Math.random() * 9 + 1) * 1000L).toInt().toString()
+    val userId = ((Math.random() * 9 + 1) * 1000L).toInt().toString()//用户Id 只是一个临时的随机数
     private var events: RtmEvents? = null
 
 
@@ -107,6 +108,7 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
     private fun currentIsCalled(): Boolean {
         return currentRemoteInvitation != null
     }
+
     //发送查询对方呼叫状态信令
     fun sendCallStateMsg() {
         sendMessage(
@@ -118,30 +120,30 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
     }
 
     //不在呼叫页面了
-    fun finishCall(){
-        if (currentIsCalled()){
-            currentRemoteInvitation?.let { rtmCallManager.refuseRemoteInvitation(it,null) }
-        }else{
-            localInvitation?.let { rtmCallManager.cancelLocalInvitation(it,null)}
+    fun finishCall() {
+        if (currentIsCalled()) {
+            currentRemoteInvitation?.let { rtmCallManager.refuseRemoteInvitation(it, null) }
+        } else {
+            localInvitation?.let { rtmCallManager.cancelLocalInvitation(it, null) }
         }
     }
 
     //发送是否还在呼叫回执信令
-    fun sendCallStateResponseMsg(uid:String) {
+    fun sendCallStateResponseMsg(uid: String) {
         sendMessage(
-           uid, JSONObject().apply {
-                put("Cmd","CallStateResult")
-                if (isWaiting){
+            uid, JSONObject().apply {
+                put("Cmd", "CallStateResult")
+                if (isWaiting) {
                     put("state", 1)
-                }else if (isCalling){
+                } else if (isCalling) {
                     //如果发消息的id和当前通话id不一致则直接发CallState =0
-                        if (uid!=callingUid){
-                            put("state", 0)
-                        }else{
-                            put("state", 2)
-                            put("Mode",callType)
-                        }
-                }else{
+                    if (uid != callingUid) {
+                        put("state", 0)
+                    } else {
+                        put("state", 2)
+                        put("Mode", callType)
+                    }
+                } else {
                     put("state", 0)
                 }
             }.toString(), {
@@ -151,16 +153,20 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
 
     //重新分发对方已同意呼叫回调
 
-    fun reSendAcceptCallback(callType:Int){
-        events?.onLocalInvitationAccepted(localInvitation,JSONObject().apply {
-            put("Mode",callType)
+    fun reSendAcceptCallback(callType: Int) {
+        events?.onLocalInvitationAccepted(localInvitation, JSONObject().apply {
+            put("Mode", callType)
         }.toString())
     }
 
     suspend fun login() = suspendCoroutine<Boolean> {
+        //rtm 登录
+        //异步任务？不知道
         rtmClient.logout(null)
+        //异步任务
         rtmClient.login("", userId, object : ResultCallback<Void> {
             override fun onSuccess(var1: Void?) {
+                Log.i("login()", "onSuccess + ${Thread.currentThread()}")
                 isLoginSuccess = true
                 it.resume(true)
                 rtmCallManager.setEventListener(CallEvent())
@@ -235,7 +241,7 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
 
     private fun queryOnline(
         queryList: HashSet<String>,
-        resultList: (MutableMap<String, Boolean>?) -> Unit
+        resultList: (MutableMap<String, Boolean>?) -> Unit,
     ) {
         rtmClient.queryPeersOnlineStatus(
             queryList,
@@ -249,7 +255,6 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
             })
 
     }
-
 
 
     fun call() {
@@ -336,7 +341,7 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
         }
 
         override fun onMessageReceived(var1: RtmMessage?, var2: String?) {
-            events?.onMessageReceived(var1,var2)
+            events?.onMessageReceived(var1, var2)
         }
 
         override fun onTokenExpired() {
@@ -483,7 +488,7 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
         }
 
         override fun onMessageReceived(var1: RtmMessage?, var2: RtmChannelMember?) {
-            events?.onMessageReceived(var1,var2?.userId)
+            events?.onMessageReceived(var1, var2?.userId)
         }
 
         override fun onMemberJoined(var1: RtmChannelMember?) {
@@ -509,7 +514,7 @@ class GlobalVM : ViewModel(), LifecycleObserver,NetworkObserver.Listener {
 
     override fun onConnectivityChange(isOnline: Boolean) {
         netOnline = isOnline
-        Log.d("onConnectivityChange",isOnline.toString())
+        Log.d("onConnectivityChange", isOnline.toString())
     }
 
     override fun onCleared() {

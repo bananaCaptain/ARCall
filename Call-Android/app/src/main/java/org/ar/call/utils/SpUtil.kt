@@ -1,9 +1,13 @@
 package org.ar.call.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 
-
+/**
+ * 建议使用mmkv解决
+ */
+@SuppressLint("StaticFieldLeak")
 object SpUtil {
 
     private lateinit var context:Context

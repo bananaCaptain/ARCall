@@ -1,5 +1,6 @@
 package org.ar.call
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
@@ -16,7 +17,7 @@ import kotlin.properties.Delegates
 import android.media.AudioAttributes
 import android.net.Uri
 import com.kongzue.dialogx.style.IOSStyle
-import com.tencent.bugly.crashreport.CrashReport
+//import com.tencent.bugly.crashreport.CrashReport
 
 
 class CallApplication :Application(), ViewModelStoreOwner,Application.ActivityLifecycleCallbacks{
@@ -26,17 +27,19 @@ class CallApplication :Application(), ViewModelStoreOwner,Application.ActivityLi
 
     companion object{
         var callApp : CallApplication by Delegates.notNull()
+//        @SuppressLint("StaticFieldLeak")
+//        lateinit var  callApp : CallApplication
     }
 
     override fun onCreate() {
         super.onCreate()
         callApp = this
-        SpUtil.init(this)
+        SpUtil.init(this)//kv存储
         DialogX.init(this)
         DialogX.cancelButtonText="取消"
         DialogX.globalStyle = IOSStyle.style();
         registerActivityLifecycleCallbacks(this)
-        CrashReport.initCrashReport(this.applicationContext, "939abb0f89", BuildConfig.DEBUG)
+//        CrashReport.initCrashReport(this.applicationContext, "939abb0f89", BuildConfig.DEBUG)
     }
 
     override fun getViewModelStore(): ViewModelStore {
