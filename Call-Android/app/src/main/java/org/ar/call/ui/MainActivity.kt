@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.KeyEvent
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
-import com.drake.statusbar.darkMode
-import com.drake.statusbar.immersive
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.WaitDialog
 import org.ar.call.*
@@ -14,8 +12,6 @@ import org.ar.call.databinding.ActivityMainBinding
 import org.ar.call.utils.go
 import org.ar.call.utils.showError
 import org.ar.call.utils.showSuccess
-import org.ar.call.utils.toast
-import kotlinx.coroutines.delay
 import org.ar.rtm.RemoteInvitation
 import org.json.JSONObject
 import kotlin.system.exitProcess

@@ -1,5 +1,6 @@
 package org.ar.call.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import com.drake.statusbar.darkMode
@@ -14,7 +15,11 @@ import org.ar.call.view.SeparatedEditText
 import org.ar.rtm.RemoteInvitation
 import org.json.JSONObject
 
+/**
+ * 一对一呼叫页
+ */
 class P2PActivity : BaseActivity() {
+
     private val binding by lazy { ActivityP2PactivityBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +30,7 @@ class P2PActivity : BaseActivity() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun initView(){
         binding.run {
             tvUser.text = "您的呼叫ID:${callViewModel.userId}"
@@ -58,6 +64,7 @@ class P2PActivity : BaseActivity() {
                     showError("不能呼叫自己")
                     return@setOnClickListener
                 }
+                //呼叫通话
                 BottomMenu.show(arrayOf("视频呼叫", "语音呼叫")).setMessage("请选择呼叫类型")
                     .setOnMenuItemClickListener(object : OnMenuItemClickListener<BottomMenu> {
                         override fun onClick(
@@ -65,8 +72,10 @@ class P2PActivity : BaseActivity() {
                             text: CharSequence?,
                             index: Int
                         ): Boolean {
+                            //1.判断用户是否在线
                             callViewModel.queryOnline(etUser.text.toString()){
                                 if (it) {
+                                    //如果用户在线则创建本地邀请
                                     callViewModel.createLocalInvitation(
                                         binding.etUser.text.toString(),
                                         index

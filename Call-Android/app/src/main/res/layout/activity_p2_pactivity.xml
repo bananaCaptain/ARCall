@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_marginTop="24dp"
         android:layout_height="wrap_content">
+
         <ImageButton
             android:id="@+id/btn_setting"
             android:layout_width="wrap_content"
@@ -19,7 +20,7 @@
             android:background="@null"
             android:layout_alignParentRight="true"
             android:padding="12dp"
-            ></ImageButton>
+            />
 
 
         <ImageButton
@@ -28,7 +29,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:padding="12dp"
-            android:src="@drawable/img_back"></ImageButton>
+            android:src="@drawable/img_back"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,7 +38,7 @@
             android:textSize="15sp"
             android:layout_centerInParent="true"
             android:textColor="@color/white"
-            android:layout_centerHorizontal="true"></TextView>
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
 
@@ -60,7 +61,7 @@
                 android:layout_marginLeft="35dp"
                 android:layout_marginTop="80dp"
                 android:textSize="14sp"
-                android:text="请输入对方的ID"></TextView>
+                android:text="请输入对方的ID"/>
 
 
             <org.ar.call.view.SeparatedEditText
@@ -79,7 +80,7 @@
                 app:blockSpacing="12dp"
                 app:blockColor="@color/white"
                 app:textColor="#606060"
-                ></org.ar.call.view.SeparatedEditText>
+               />
 
             <Space
                 android:layout_width="match_parent"

@@ -74,8 +74,8 @@ class GlobalVM : ViewModel(), LifecycleObserver, NetworkObserver.Listener {
         isBackground = true
     }
 
-
-    val userId = ((Math.random() * 9 + 1) * 1000L).toInt().toString()//用户Id 只是一个临时的随机数
+    //用户id 是一个 随机生成的不可变量
+    val userId = ((Math.random() * 9 + 1) * 1000L).toInt().toString()
     private var events: RtmEvents? = null
 
 
@@ -164,6 +164,7 @@ class GlobalVM : ViewModel(), LifecycleObserver, NetworkObserver.Listener {
         //异步任务？不知道
         rtmClient.logout(null)
         //异步任务
+        //登录接口需要出入用户id
         rtmClient.login("", userId, object : ResultCallback<Void> {
             override fun onSuccess(var1: Void?) {
                 Log.i("login()", "onSuccess + ${Thread.currentThread()}")
@@ -224,12 +225,13 @@ class GlobalVM : ViewModel(), LifecycleObserver, NetworkObserver.Listener {
     }
 
     fun createLocalInvitation(peerId: String, type: Int, block: () -> Unit) {
-        localInvitation = rtmCallManager.createLocalInvitation(peerId)
+        localInvitation = rtmCallManager.createLocalInvitation(peerId)//创建一个本地邀请对象传入自己的id
         localInvitation?.let {
+            //设置本地邀请对象的具体内容
             it.content = JSONObject().apply {
                 put("Mode", type)//音频 or 视频
                 put("Conference", false)//是否多人
-                put("ChanId", ((Math.random() * 9 + 1) * 100000000L).toLong().toString())//频道号
+                put("ChanId", ((Math.random() * 9 + 1) * 100000000L).toLong().toString())//频道号 随机的
                 put("UserData", "")
                 put("SipData", "")
                 put("VidCodec", "[\"H264\",\"MJpeg\"]")//适配linux手表端

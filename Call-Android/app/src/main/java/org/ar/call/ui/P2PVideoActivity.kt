@@ -1,13 +1,8 @@
 package org.ar.call.ui
 
-import android.app.PictureInPictureParams
-import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.media.MediaPlayer
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Rational
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.ar.call.*
-import org.ar.call.bean.VideoDebugData
 import org.ar.call.utils.*
 import org.ar.call.vm.RtcVM
 import org.ar.rtc.RtcEngine
@@ -28,8 +22,11 @@ import org.ar.rtm.RemoteInvitation
 import org.ar.rtm.RtmMessage
 import org.json.JSONObject
 import org.webrtc.TextureViewRenderer
-import java.util.HashMap
+import java.util.*
 
+/**
+ * 一对一视频页
+ */
 class P2PVideoActivity : BaseActivity() {
     private val binding by lazy { org.ar.call.databinding.ActivityP2PvideoBinding.inflate(layoutInflater) }
     private val bindingReceive by lazy { org.ar.call.databinding.LayoutReceivedSingleCallBinding.inflate(layoutInflater) }
